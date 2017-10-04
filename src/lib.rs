@@ -495,12 +495,12 @@ impl RuntimeHandle {
         }
     }
 
-    pub fn upload_audio_frame( &mut self, data: &[i16] ) {
-        assert!( data.len() % 2 == 0, "Audio data must be in stereo!" );
+    pub fn upload_audio_frame( &mut self, data: &[(i16, i16)] ) {
+        //assert!( data.len() % 2 == 0, "Audio data must be in stereo!" );
 
-        self.audio_samples_uploaded += data.len();
+        self.audio_samples_uploaded += data.len() * 2;
         unsafe {
-            (self.audio_sample_batch_callback)( data.as_ptr(), data.len() / 2 );
+            (self.audio_sample_batch_callback)( mem::transmute( data.as_ptr() ), data.len() );
         }
     }
 
